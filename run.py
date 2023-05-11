@@ -1,3 +1,11 @@
-# Your code goes here.
-# You can delete these comments, but do not change the name of this file
-# Write your code to expect a terminal of 80 characters wide and 24 rows high
+from pprint import pprint
+
+def username():
+    """
+    Gets the username
+    """
+    user = input('Enter your username: ')
+    print('Welcome to the battle of the ships{user}!')
+
+
+username()
