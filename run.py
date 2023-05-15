@@ -29,7 +29,7 @@ def new_game():
     if user_choice == "r":
         display_instructions()
     elif user_choice == "p":
-        set_board()
+        set_board(hit,miss,comp)
 
 def display_instructions():
     """
@@ -40,14 +40,31 @@ def display_instructions():
 
 
 
-def set_board():
+def set_board(hit,miss,comp):
     """
     Prints X- axis as 1-5 and Y-axis as A-E
 
     """
-    print(f"{username}'s Fleet")
-    print(f'    1 2 3 4 5')
-    print('---------------')
-    
+    print("     0  1  2  3  4  5  6  7  8  9")
+
+    place = 0
+    for x in range(10):
+        row = ""
+        for y in range(10):
+            ch = " _ "
+            if  place in miss:
+                ch = " x "
+            elif place in hit:
+                ch = " o "
+            elif place in comp:
+                ch = " O "
+
+            row = row + ch
+            place = place + 1
+        print(x," ",row)
+   
+hit = [21,22]
+miss = [20,24,12,13]
+comp = [23] 
 
 new_game()
