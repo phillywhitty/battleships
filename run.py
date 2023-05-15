@@ -1,11 +1,63 @@
 from random import randrange
 
-boats = [5,4,3,3,2,2]
-for b in boats:
-    boat_start = randrange(99)
-    boat_direction = randrange(1,4)
-    print(b,boat_start,boat_direction)
-    check_boat(b,boat_start,boat_direction)
+
+def check_ok(boat,taken):
+
+    for i in range(len(boat)):
+        num = boat[i]
+        if num in taken:
+            boat = [-1]
+            break
+        elif num < 0 or num > 99:
+            boat = [-1]
+            break
+        elif num % 9 == 0 and i < len(boat) - 1:
+            if boat[i+1] % 10 == 0:  
+                boat = [-1]
+            break
+
+    return boat    
+
+
+
+def check_boat(b,start,dirn,taken):
+
+    boat = []
+    if dirn == 1:
+        for i in range(b):
+            boat.append(start - i*10)
+            boat = check_ok(boat,taken)
+    elif dirn == 2:
+        for i in range(b):
+            boat.append(start + i)
+            boat = check_ok(boat,taken)
+    elif dirn == 3:
+        for i in range(b):
+            boat.append(start + i*10)
+            boat = check_ok(boat,taken)
+    elif dirn == 4:
+        for i in range(b):
+            boat.append(start - i)
+            boat = check_ok(boat,taken)
+    return boat        
+
+   
+def create_boats():  
+    taken = []
+    ships = []
+    boats = [5,4,3,3,2,2]
+    for b in boats:
+        boat = [-1]
+        while boat[0] == -1:
+            boat_start = randrange(99)
+            boat_direction = randrange(1,4)
+            print(b,boat_start,boat_direction)
+            boat = check_boat(b,boat_start,boat_direction,taken)
+        ships.append(boat)
+        taken = taken + boat
+        print(ships)
+
+    return ships,taken
 
 
 def get_shot(guesses):
@@ -29,7 +81,7 @@ def get_shot(guesses):
 
 
 
-def show_board(hit,miss,comp):
+def show_board(taken):
 
     print("     0  1  2  3  4  5  6  7  8  9")
 
@@ -38,16 +90,14 @@ def show_board(hit,miss,comp):
         row = ""
         for y in range(10):
             ch = " _ "
-            if  place in miss:
+            if  place in taken:
                 ch = " x "
-            elif place in hit:
-                ch = " o "
-            elif place in comp:
-                ch = " O "
-
             row = row + ch
             place = place + 1
         print(x," ",row)
+
+boats,taken = create_boats()
+show_board(taken)        
    
 
 def check_shot(shot,boat1,boat2,hit,miss,comp):
