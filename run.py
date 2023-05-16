@@ -42,21 +42,33 @@ def check_boat(b,start,dirn,taken):
     return boat        
 
    
-def create_boats():  
+def create_boats(): 
+    """
+    Iterates over each boat size in the boat list
+    Creates a placeholder [-1] which enters a while loop until a valid postion is found.
+    It generates a starting postion and also a direction.
+    When returned boat is valid it adds to the list of ships
+    """ 
     taken = []
     ships = []
+    # Boat Sizes
     boats = [5,4,3,3,2,2]
     for b in boats:
+        # Placeholder
         boat = [-1]
         while boat[0] == -1:
+            # Generates random starting position    
             boat_start = randrange(99)
+            # Generates random direction (1: up, 2: right, 3: down, 4: left)    
             boat_direction = randrange(1,4)
             print(b,boat_start,boat_direction)
+            # Checks to see if boat postion is valid
             boat = check_boat(b,boat_start,boat_direction,taken)
+        # Adds valid boat to list of ships    
         ships.append(boat)
         taken = taken + boat
         print(ships)
-
+    # Returns list of ships and taken places
     return ships,taken
 
 
