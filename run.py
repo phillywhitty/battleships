@@ -62,18 +62,30 @@ def create_boats():
 
 def get_shot(guesses):
 
+    """
+    Retrieves the users shots and validates them.
+    Storing the guess into the shot variable we convert it into an integer.
+    Checks to see if shots are within valid range or guessed before.
+    When guess is valid we break from loop returning the shot
+    """
+
     ok = "n"
     while ok =="n":
         try:
             shot = input("please enter your guess")
+            # Convert users input to integer
             shot = int(shot)
+            # Checks to see if shot is outside our range
             if shot < 0 or shot > 99:
                 print("incorrect number, please try again")
+            # Checks to see if shot is in already guessed list
             elif shot in guesses:  
-                print("incorrect number, used before")  
+                print("incorrect number, used before") 
+            # Loop breaks here with valid guess returning the shot     
             else:
                 ok = "y"
                 break 
+            # An exception if users types non-numeric value    
         except:
             print("incorrect entry - please enter again")
 
@@ -83,16 +95,27 @@ def get_shot(guesses):
 
 def show_board(taken):
 
+    """
+    Sets the starting place num to 0. Code then loops through each row
+    of the board creating an empthy string to store the row.
+    Then the loop inside runs through the columns setting my characters to " _ ".
+    It then checks my taken list and sets characters to " x " if taken.
+    """
+
     print("     0  1  2  3  4  5  6  7  8  9")
 
     place = 0
+    # Loops through rows
     for x in range(10):
         row = ""
+        # Loops through columns
         for y in range(10):
             ch = " _ "
+            # Checks my taken list
             if  place in taken:
                 ch = " x "
             row = row + ch
+            # Increase place number by 1 for each Iteration
             place = place + 1
         print(x," ",row)
 
