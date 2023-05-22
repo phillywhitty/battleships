@@ -11,7 +11,7 @@ def check_ok(boat,taken):
         elif num < 0 or num > 99:
             boat = [-1]
             break
-        elif num % 9 == 0 and i < len(boat) - 1:
+        elif num % 10 == 9 and i < len(boat) - 1:
             if boat[i+1] % 10 == 0:  
                 boat = [-1]
             break
@@ -72,7 +72,7 @@ def create_boats():
     return ships,taken
 
 
-def get_shot(guesses):
+def get_shot_computer(guesses):
 
     """
     Retrieves the users shots and validates them.
@@ -84,28 +84,24 @@ def get_shot(guesses):
     ok = "n"
     while ok =="n":
         try:
-            shot = input("please enter your guess")
-            # Convert users input to integer
-            shot = int(shot)
-            # Checks to see if shot is outside our range
-            if shot < 0 or shot > 99:
-                print("incorrect number, please try again")
+            shot = randrange(99)
+        
             # Checks to see if shot is in already guessed list
-            elif shot in guesses:  
-                print("incorrect number, used before") 
-            # Loop breaks here with valid guess returning the shot     
-            else:
+            if shot not in guesses:  
                 ok = "y"
+                guesses.append(shot)
                 break 
             # An exception if users types non-numeric value    
         except:
             print("incorrect entry - please enter again")
 
-    return shot
+    return shot, guesses
 
+boats,taken = create_boats()
+show_board_computer(taken)   
+shot,guesses = get_shot_computer(guesses) 
 
-
-def show_board(taken):
+def show_board_computer(taken):
 
     """
     Sets the starting place num to 0. Code then loops through each row
@@ -125,15 +121,13 @@ def show_board(taken):
             ch = " _ "
             # Checks my taken list
             if  place in taken:
-                ch = " x "
+                ch = " o "
             row = row + ch
             # Increase place number by 1 for each Iteration
             place = place + 1
         print(x," ",row)
 
-boats,taken = create_boats()
-show_board(taken)        
-   
+
 
 def check_shot(shot,boat1,boat2,hit,miss,comp):
 
@@ -155,6 +149,27 @@ def check_shot(shot,boat1,boat2,hit,miss,comp):
 
 
     return boat1,boat2,hit,miss,comp
+
+
+def show_board(hit,miss,comp):
+    print("            battleships    ")
+    print("     0  1  2  3  4  5  6  7  8  9")
+
+    place = 0
+    for x in range(10):
+        row = ""
+        for y in range(10):
+            ch = " _ "
+            if place in miss:
+                ch = " x " 
+            elif place in hit:
+                ch = " o "
+            elif place in comp:
+                ch = " O "   
+            row = row + ch
+            place = place + 1
+            
+        print(x," ",row)    
 
 
 boat1 = [45,46,47]   
