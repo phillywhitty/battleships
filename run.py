@@ -1,5 +1,5 @@
 from random import randrange
-
+import random
 
 def check_ok(boat,taken):
 
@@ -61,18 +61,18 @@ def create_boats():
             boat_start = randrange(99)
             # Generates random direction (1: up, 2: right, 3: down, 4: left)    
             boat_direction = randrange(1,4)
-            print(b,boat_start,boat_direction)
+           
             # Checks to see if boat postion is valid
             boat = check_boat(b,boat_start,boat_direction,taken)
         # Adds valid boat to list of ships    
         ships.append(boat)
         taken = taken + boat
-        print(ships)
+  
     # Returns list of ships and taken places
     return ships,taken
 
 
-def get_shot_computer(guesses):
+def get_shot_computer(guesses,tactics):
 
     """
     Retrieves the users shots and validates them.
@@ -84,7 +84,10 @@ def get_shot_computer(guesses):
     ok = "n"
     while ok =="n":
         try:
-            shot = randrange(99)
+            if len(tactics) > 0:
+                shot = tactics[0]
+            else:    
+                shot = randrange(99)
         
             # Checks to see if shot is in already guessed list
             if shot not in guesses:  
@@ -117,36 +120,8 @@ def show_board(hit,miss,comp):
             
         print(x," ",row)       
 
-def check_shot(shot,ships,hit,miss,comp):
-    missed = 1
-    for i in range(len(ships)):
 
-        if shot in ships[i]:
-            ships[i].remove(shot)
-            missed = 0
-            if len(ships[i]) > 0:
-                hit.append(shot)
-            else:
-                comp.append(shot)      
 
-    if missed == 1:
-        miss.append(miss)
-
-           
-    return ships,hit,miss,comp
-    
-
-hit = []
-miss = []
-comp = []
-guesses = []
-ships,taken = create_boats()
-show_board_c(taken) 
-
-for i in range(2):
-    shot,guesses = get_shot_computer(guesses)
-    ships,hit,miss,comp = check_shot(shot,ships,hit,miss,comp)
-    show_board(hit, miss, comp)
 
 def show_board_c(taken):
 
@@ -176,6 +151,90 @@ def show_board_c(taken):
 
 
 
+def check_shot(shot,ships,hit,miss,comp):
+    missed = 0
+    for i in range(len(ships)):
+
+        if shot in ships[i]:
+            ships[i].remove(shot)
+            if len(ships[i]) > 0:
+                hit.append(shot)
+                missed = 1
+            else:
+                comp.append(shot)      
+                missed = 2
+    if missed == 0:
+        miss.append(miss)
+
+           
+    return ships,hit,miss,comp, missed
+    
+def calc_tactics(shot,tactics,guesses,hit):
+
+
+    if len(tactics) < 1:
+        temp = [shot-1,shot+1,shot-10,shot+10]
+    else:
+        if shot-1 in hit: 
+            if shot -2 in hit:
+                temp = [shot-3,shot+1]
+            else:
+                temp = [shot-2,shot+1]  
+        elif shot+1 in hit: 
+            if shot -2 in hit:
+                temp = [shot+3,shot-1]
+            else:
+                temp = [shot+2,shot-1]  
+        elif shot-10 in hit: 
+            if shot -2 in hit:
+                temp = [shot-30,shot+10]
+            else:
+                temp = [shot-20,shot+10]   
+        elif shot+10 in hit:
+            if shot -2 in hit:
+                temp = [shot+30,shot-10]
+            else:
+                temp = [shot+20,shot-10] 
+             
+    #tactics longer
+    cand = []
+    for i in range (len(temp)):
+        if temp[i] not in guesses and temp[i] < 100 and temp[i] > -1:
+            cand.append(temp[i])
+    random.shuffle(cand)       
+
+    return cand         
+
+def check_if_empty_2(list_of_lists):
+    return all([not elem for elem in list_of_lists ])
+
+hit = []
+miss = []
+comp = []
+guesses = []
+ships,taken = create_boats()
+
+tactics = []
+
+for i in range(80):
+    shot,guesses = get_shot_computer(guesses, tactics)
+    ships,hit,miss,comp,missed = check_shot(shot,ships,hit,miss,comp)
+
+    if missed == 1:
+        tactics = calc_tactics(shot,tactics,guesses,hit)
+    elif missed == 2: 
+        tactics = []
+    elif len(tactics) > 0:
+        tactics.pop(0) 
+
+    if check_if_empty_2(ships):
+        print("end of game",i)   
+        break   
+
+show_board_c(taken)
+show_board(hit, miss, comp)
+
+
 def check_shot(shot,boat1,boat2,hit,miss,comp):
 
     if shot in boat1:
@@ -203,10 +262,9 @@ boat2 = [6,16,26]
 hit = []
 miss = []
 comp = [] 
-
 for i in range(10):
     guesses = hit + miss + comp
-    shot = get_shot(guesses)
+    shot = get_shot_computer(guesses,tactics)
     boat1,boat2,hit,miss,comp = check_shot(shot,boat1,boat2,hit,miss,comp)
     show_board(hit,miss,comp)
 
