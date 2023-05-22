@@ -97,11 +97,58 @@ def get_shot_computer(guesses):
 
     return shot, guesses
 
-boats,taken = create_boats()
-show_board_computer(taken)   
-shot,guesses = get_shot_computer(guesses) 
+def show_board(hit,miss,comp):
+    print("            battleships    ")
+    print("     0  1  2  3  4  5  6  7  8  9")
 
-def show_board_computer(taken):
+    place = 0
+    for x in range(10):
+        row = ""
+        for y in range(10):
+            ch = " _ "
+            if place in miss:
+                ch = " x " 
+            elif place in hit:
+                ch = " o "
+            elif place in comp:
+                ch = " O "   
+            row = row + ch
+            place = place + 1
+            
+        print(x," ",row)       
+
+def check_shot(shot,ships,hit,miss,comp):
+    missed = 1
+    for i in range(len(ships)):
+
+        if shot in ships[i]:
+            ships[i].remove(shot)
+            missed = 0
+            if len(ships[i]) > 0:
+                hit.append(shot)
+            else:
+                comp.append(shot)      
+
+    if missed == 1:
+        miss.append(miss)
+
+           
+    return ships,hit,miss,comp
+    
+
+hit = []
+miss = []
+comp = []
+guesses = []
+ships,taken = create_boats()
+show_board_c(taken) 
+
+for i in range(2):
+    shot,guesses = get_shot_computer(guesses)
+    ships,hit,miss,comp = check_shot(shot,ships,hit,miss,comp)
+    show_board(hit, miss, comp)
+
+def show_board_c(taken):
 
     """
     Sets the starting place num to 0. Code then loops through each row
@@ -149,28 +196,7 @@ def check_shot(shot,boat1,boat2,hit,miss,comp):
 
 
     return boat1,boat2,hit,miss,comp
-
-
-def show_board(hit,miss,comp):
-    print("            battleships    ")
-    print("     0  1  2  3  4  5  6  7  8  9")
-
-    place = 0
-    for x in range(10):
-        row = ""
-        for y in range(10):
-            ch = " _ "
-            if place in miss:
-                ch = " x " 
-            elif place in hit:
-                ch = " o "
-            elif place in comp:
-                ch = " O "   
-            row = row + ch
-            place = place + 1
-            
-        print(x," ",row)    
-
+ 
 
 boat1 = [45,46,47]   
 boat2 = [6,16,26]
