@@ -3,6 +3,7 @@ import random
 
 def check_ok(boat,taken):
 
+    boat.sort()
     for i in range(len(boat)):
         num = boat[i]
         if num in taken:
@@ -15,9 +16,44 @@ def check_ok(boat,taken):
             if boat[i+1] % 10 == 0:  
                 boat = [-1]
             break
+        if i != 0:
+            if boat[i] != boat[i-1]+1 and boat[i] != boat[i-1]+10:
+                boat = [-1]
+                break
+    return boat  
 
-    return boat    
+def get_ship(long,taken):
+    
+    ok = True
+    while ok:
+        ship = []
+        #ask the user to enter numbers
+        print("enter your ship of lenght ",long)
+        for i in range(long):
+            boat_num = input("please enter a number")
+            ship.append(int(boat_num))
+        #check that ship
+        ship = check_ok(ship,taken)
+        if ship[0] != -1:
+            taken = taken + ship
+            break
+        else:
+            print("error - please try again")    
 
+    return ship
+
+def create_ships():
+    taken = []
+    ships = []
+    boats = [5,4,3,3,2,2]
+
+    for boat in boats:
+        ship = get_ship(boat,taken)
+        ships.append(ship)
+
+    return ships
+
+ships = create_ships()
 
 
 def check_boat(b,start,dirn,taken):
